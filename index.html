@@ -1,0 +1,57 @@
+<html>
+	<head>
+		<script src="paula.js"></script>
+		<script src="protracker.js"></script>		
+	</head>
+	<body>
+		<input type="file" id="file" name="file" />
+	</body>
+			<script>
+			var modBuffer;
+
+			function handleFileSelect(evt) {
+			    var files = evt.target.files; // FileList object
+
+		    	var reader = new FileReader();
+
+			    // If we use onloadend, we need to check the readyState.
+			    reader.onloadend = function(evt) {
+			      	if (evt.target.readyState == FileReader.DONE) { // DONE == 2
+
+			      		var context = new AudioContext();
+
+						var paulaNode = context.createScriptProcessor(BUFFER_SIZE,0,1);
+
+						var paula = new Paula(context.sampleRate,evt.target.result);
+
+						paulaNode.onaudioprocess = function(e) {
+							var output = e.outputBuffer.getChannelData(0);
+							for (var i=0; i<BUFFER_SIZE; i++) {
+								output[i] = paula.getNextSample();
+							}
+						}
+
+						paulaNode.connect(context.destination);
+
+			        	var pt = new ProTracker(paula,evt.target.result);
+			    		pt.mt_init();
+						paula.vBlankCallBack = pt.mt_music.bind(pt);
+			      	}
+			    };
+
+			    modBuffer = reader.readAsArrayBuffer(files[0]);  
+
+			}
+			// Check for the various File API support.
+			if (window.File && window.FileReader && window.FileList && window.Blob) {
+			  
+				document.getElementById('file').addEventListener('change', handleFileSelect, false);
+			  	var reader = new FileReader();
+
+			} else {
+			  alert('The File APIs are not fully supported in this browser.');
+			}
+
+
+		</script>
+</html>
