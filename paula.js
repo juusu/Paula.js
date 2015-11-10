@@ -15,12 +15,13 @@ function PaulaChannel() {
 	this.length = 0;
 }
 
-function Paula(sampleRate, RAM, vBlankCallBack) {
+function Paula(sampleRate, RAM, vBlankCallBack, audioInterruptCallBack) {
 
 	this.NUM_CHANNELS = 4;
 	this.FPS = 50;
 
 	this.vBlankCallBack = vBlankCallBack || function() {};
+	this.audioInterruptCallBack = audioInterruptCallBack || function(channel) {};
 
 	this.sampleRate = sampleRate || 44100;
 	this.clock = 3546895; // PAL; NTSC = 3579545
@@ -56,7 +57,8 @@ Paula.prototype.getNextSample = function() {
 		channel.start = channel.LCH<<16|channel.LCL;
 		channel.length = channel.LEN*2;
 		channel.offset = 0;	
-	}
+		paula.audioInterruptCallBack(channel);
+	}.bind(this);
 
 	for (i=0;i<this.NUM_CHANNELS;i++) {
 		if (this.channel[i].EN) {

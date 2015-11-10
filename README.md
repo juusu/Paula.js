@@ -1,12 +1,11 @@
 # Paula.js
 JavaScript emulation of the Amiga's Paula soundchip
 
-v0.1
+v0.2
 
 To add in future versions:
 
 * Volume (everything is played at the maximum volume of 64)
-* Audio Interrupts
 * Interpolation
 
 Not supported, but probably will not add:
@@ -48,3 +47,10 @@ How to use it yourself:
     // your vblank code
   }
   
+* There's also an audio interrupt hook. To use it:
+
+  paula.audioInterruptCallBack = new function(channel) {
+    // your audio interrupt code
+    // where channel is an instance of PaulaChannel representing 
+    // the audio channel which triggered the interrupt
+  }
