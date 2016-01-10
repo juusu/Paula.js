@@ -1,14 +1,13 @@
 # Paula.js
 JavaScript emulation of the Amiga's Paula soundchip
 
-v0.2
+v1.0
 
-To add in future versions:
+Added volume and linear interpolation.
+I consider this version feature complete now, probably won't be adding much new features. 
+Maybe some better form of interpolation like BLEPs if I get around to it.
 
-* Volume (everything is played at the maximum volume of 64)
-* Interpolation
-
-Not supported, but probably will not add:
+Not supported, and probably never will be:
 
 * Channel attach mode (volume and period modulation - probably won't be adding this)
 
