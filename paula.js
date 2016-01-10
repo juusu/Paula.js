@@ -69,17 +69,24 @@ Paula.prototype.getNextSample = function() {
 			}
 
 			this.channel[i].offset += this.clockAdvance / this.channel[i].PER;
-			if (Math.floor(this.channel[i].offset) >= this.channel[i].length) {
+      		
+      		var intOffset = Math.floor(this.channel[i].offset);
+      
+			if (intOffset >= this.channel[i].length) {
 				latch(this.channel[i]);
-			}		
-			output += this.RAM.getInt8(this.channel[i].start+Math.floor(this.channel[i].offset));
-			// TODO: add volume support!
+			}			
+			
+			var delta = this.channel[i].offset - intOffset;
+      		var thisSample = this.RAM.getInt8(this.channel[i].start+intOffset);
+      		var nextSample = ((intOffset + 1) < this.channel[i].length) ? this.RAM.getInt8(this.channel[i].start+intOffset+1) : this.RAM.getInt8(this.channel[i].start);
+      		output += this.channel[i].VOL * (thisSample + delta * (nextSample - thisSample)); // linear interpolation
+
 		}
 		else {
 			this.channel[i].exEnable = false;
 		}
 	}
 
-	return output / 512;
+	return output / 32768;
 
 }
