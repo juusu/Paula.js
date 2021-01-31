@@ -1,6 +1,15 @@
 # Paula.js
 JavaScript emulation of the Amiga's Paula soundchip
 
+v1.1.0
+
+Added support for callbacks triggered by the CIA timer. This doesn't properly emulate the CIA
+chips, but it provides a simple way to trigger code at arbitrary intervals. This is useful for
+implementing things like CIA-timed mod replays.
+
+To use it, provide the ciaTimerCallBack (your code to be executed when the "interrupt" fires),
+and set CIATA to the desired CIA delay value.
+
 v1.0
 
 Added volume and linear interpolation.
@@ -46,6 +55,13 @@ How to use it yourself:
     // your vblank code
   }
   
+* To use the CIA interrupt hook do something like this instead:
+
+  paula.ciaTimerCallBack = new function() {
+    // your cia code here
+  }
+  paula.CIATA = 12345; // the CIA timer delay
+
 * There's also an audio interrupt hook. To use it:
 
   paula.audioInterruptCallBack = new function(channel) {

@@ -9,34 +9,43 @@ function PaulaChannel() {
 	this.PER = 0;
 	this.VOL = 0;
 
+	this.CIATA = 0;
+
 	this.offset = 0;
 	this.exEnable = false;
 	this.start = 0;
 	this.length = 0;
 }
 
-function Paula(sampleRate, RAM, vBlankCallBack, audioInterruptCallBack) {
+function Paula(sampleRate, RAM, vBlankCallBack, audioInterruptCallBack, ciaTimerCallBack, ciaTimerInterval) {
 
 	this.NUM_CHANNELS = 4;
 	this.FPS = 50;
 
 	this.vBlankCallBack = vBlankCallBack || function() {};
 	this.audioInterruptCallBack = audioInterruptCallBack || function(channel) {};
+	this.ciaTimerCallBack = ciaTimerCallBack || function() {};
+
+	this.CIATA = ciaTimerInterval || 0;
+	this.ciaTimerInterval = this.CIATA;
 
 	this.sampleRate = sampleRate || 44100;
 	this.clock = 3546895; // PAL; NTSC = 3579545
 
 	this.clockAdvance = this.clock / this.sampleRate;
 
-	this.frameCount = 0;
+	this.ciaClockAdvance = this.clockAdvance / 5;
 
-	this.frameAdvance = this.clockAdvance * this.FPS / this.clock;
+	this.frameCount = 0;
+	this.ciaClock = 0;
+
+	this.frameAdvance = this.FPS / this.sampleRate;
 
 	this.channel = [];
 
 	this.RAM = new DataView(RAM);
 
-	for (i=0;i<this.NUM_CHANNELS;i++) {
+	for (var i=0;i<this.NUM_CHANNELS;i++) {
 		this.channel.push(new PaulaChannel());
 	}
 
@@ -53,14 +62,22 @@ Paula.prototype.getNextSample = function() {
 
 	this.frameCount+=this.frameAdvance;
 
+	if (Math.floor(this.ciaClock+this.ciaClockAdvance) > (this.ciaTimerInterval)) {
+		this.ciaClock -= this.ciaTimerInterval; // reset CIA timer
+		this.ciaTimerInterval = this.CIATA; // latch new timer value
+		this.ciaTimerCallBack();
+	}
+
+	this.ciaClock += this.ciaClockAdvance;
+
 	var latch = function(channel) {
 		channel.start = channel.LCH<<16|channel.LCL;
 		channel.length = channel.LEN*2;
 		channel.offset = 0;	
-		paula.audioInterruptCallBack(channel);
+		this.audioInterruptCallBack(channel);
 	}.bind(this);
 
-	for (i=0;i<this.NUM_CHANNELS;i++) {
+	for (var i=0;i<this.NUM_CHANNELS;i++) {
 		if (this.channel[i].EN) {
 
 			if (!this.channel[i].exEnable) {
@@ -74,6 +91,7 @@ Paula.prototype.getNextSample = function() {
       
 			if (intOffset >= this.channel[i].length) {
 				latch(this.channel[i]);
+				intOffset = 0;
 			}			
 			
 			var delta = this.channel[i].offset - intOffset;
@@ -90,3 +108,5 @@ Paula.prototype.getNextSample = function() {
 	return output / 32768;
 
 }
+
+export { Paula };

@@ -1,0 +1,50 @@
+{
+    "_from": "paulajs",
+    "_id": "paulajs@1.0.0",
+    "_inBundle": false,
+    "_integrity": "sha512-7TAzDasw4IqFslLdWjKSJIAe1JMEsB1Y4bfjZwGdOwSa4U34khqmkQCTWMBQFLLMzy0FX8HS+AjAOBEv4T4Raw==",
+    "_location": "/paulajs",
+    "_phantomChildren": {},
+    "_requested": {
+      "type": "tag",
+      "registry": true,
+      "raw": "paulajs",
+      "name": "paulajs",
+      "escapedName": "paulajs",
+      "rawSpec": "",
+      "saveSpec": null,
+      "fetchSpec": "latest"
+    },
+    "_requiredBy": [
+      "#USER",
+      "/"
+    ],
+    "_resolved": "https://registry.npmjs.org/paulajs/-/paulajs-1.0.0.tgz",
+    "_shasum": "eb4ca49ae9176a0242f42b98a20ccf4227b22893",
+    "_spec": "paulajs",
+    "_where": "C:\\Users\\nikol\\Code\\ModConvert",
+    "author": {
+      "name": "Nikola Fox",
+      "email": "nikola.fox@gmail.com",
+      "url": "https://github.com/juusu"
+    },
+    "browser": "paula.js",
+    "bugs": {
+      "url": "https://github.com/juusu/Paula.js/issues"
+    },
+    "bundleDependencies": false,
+    "deprecated": false,
+    "description": "JavaScript emulation of the Amiga's Paula soundchip",
+    "homepage": "https://github.com/juusu/Paula.js#readme",
+    "license": "MIT",
+    "name": "paulajs",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/juusu/Paula.js.git"
+    },
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "version": "1.1.0"
+  }
+  
